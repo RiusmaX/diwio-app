@@ -1,20 +1,24 @@
-import { useEffect, useState } from 'react'
-import { getJoke } from '../services/JokeApi'
+import { useState } from 'react'
 import Button from './Button'
+import { useFetch } from '../hooks/useFetch'
 
 function Joke () {
-  const [joke, setJoke] = useState('Ici la blague')
   const [showAnswer, setShowAnswer] = useState(false)
 
-  const getData = async () => {
-    setShowAnswer(false)
-    const data = await getJoke()
-    setJoke(data)
+  const { loading, data, error, getData } = useFetch({
+    url: `${import.meta.env.VITE_JOKE_API_URL}/random`,
+    bearerToken: import.meta.env.VITE_JOKE_API_TOKEN
+  })
+
+  if (loading) {
+    return <h2 className='text-center'>Chargement...</h2>
   }
 
-  useEffect(() => {
-    getData()
-  }, [])
+  if (error) {
+    return <pre>{JSON.stringify(error, null, 2)}</pre>
+  }
+
+  const joke = data
 
   const getColor = (type) => {
     switch (type) {
@@ -32,7 +36,12 @@ function Joke () {
     }
   }
 
-  return (
+  const handleRefresh = () => {
+    setShowAnswer(false)
+    getData()
+  }
+
+  return joke && (
     <>
       <span className={`${getColor(joke.type)} py-2 px-4 rounded-3xl`}>
         {joke.type}
@@ -53,7 +62,7 @@ function Joke () {
             </Button>
             )
       }
-      <Button onClick={getData}>
+      <Button onClick={handleRefresh}>
         Nouvelle blague
       </Button>
     </>

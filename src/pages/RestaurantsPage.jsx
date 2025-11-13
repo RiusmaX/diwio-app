@@ -1,23 +1,23 @@
-import { useEffect, useState } from 'react'
 import RestaurantsList from '../components/restaurants/RestaurantsList'
-import { getRestaurants } from '../services/Strapi'
+import { useFetch } from '../hooks/useFetch'
 
 function RestaurantsPage () {
-  const [restaurants, setRestaurants] = useState([])
+  const { loading, data, error } = useFetch({
+    url: `${import.meta.env.VITE_STRAPI_API_URL}/restaurants?populate=logo`
+  })
 
-  useEffect(() => {
-    const getData = async () => {
-      const data = await getRestaurants()
-      setRestaurants(data)
-    }
+  if (loading) {
+    return <h2 className='text-center'>Chargement...</h2>
+  }
 
-    getData()
-  }, [])
+  if (error) {
+    return <pre>{JSON.stringify(error, null, 2)}</pre>
+  }
 
-  return (
+  return data && (
     <div>
       <h2 className='text-4xl font-semibold text-center'>Nos restaurants</h2>
-      <RestaurantsList restaurants={restaurants} />
+      <RestaurantsList restaurants={data.data} />
     </div>
   )
 }
