@@ -3,6 +3,8 @@ import App from '../App'
 import RestaurantsPage from '../pages/RestaurantsPage'
 import Header from './Header'
 import RestaurantDetailsPage from '../pages/RestaurantDetailsPage'
+import ContactPage from '../pages/ContactPage'
+import AuthPage from '../pages/AuthPage'
 
 function Router () {
   return (
@@ -12,6 +14,8 @@ function Router () {
         <Route index path='/' element={<App />} />
         <Route path='/restaurants' element={<RestaurantsPage />} />
         <Route path='/restaurant/:id' element={<RestaurantDetailsPage />} />
+        <Route path='/contact' element={<ContactPage />} />
+        <Route path='/auth' element={<AuthPage />} />
       </Routes>
     </BrowserRouter>
   )

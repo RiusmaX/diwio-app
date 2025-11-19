@@ -18,7 +18,25 @@ const getRestaurantById = async (id) => {
   }
 }
 
+const register = async (userInfos) => {
+  try {
+    const response = await window.fetch(`${import.meta.env.VITE_STRAPI_API_URL}/auth/local/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify(userInfos)
+    })
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error('Erreur d\'inscription', error)
+  }
+}
+
 export {
   getRestaurants,
-  getRestaurantById
+  getRestaurantById,
+  register
 }

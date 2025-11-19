@@ -8,6 +8,14 @@ const navItems = [
   {
     label: 'Restaurants',
     link: '/restaurants'
+  },
+  {
+    label: 'Contact',
+    link: '/contact'
+  },
+  {
+    label: 'Mon compte',
+    link: '/auth'
   }
 ]
 
