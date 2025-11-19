@@ -5,6 +5,8 @@ import Header from './Header'
 import RestaurantDetailsPage from '../pages/RestaurantDetailsPage'
 import ContactPage from '../pages/ContactPage'
 import AuthPage from '../pages/AuthPage'
+import ProtectedRoute from './ProtectedRoute'
+import DashboardPage from '../pages/DashboardPage'
 
 function Router () {
   return (
@@ -16,6 +18,13 @@ function Router () {
         <Route path='/restaurant/:id' element={<RestaurantDetailsPage />} />
         <Route path='/contact' element={<ContactPage />} />
         <Route path='/auth' element={<AuthPage />} />
+        <Route
+          path='/dashboard' element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+        }
+        />
       </Routes>
     </BrowserRouter>
   )
