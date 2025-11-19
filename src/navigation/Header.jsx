@@ -1,4 +1,6 @@
 import { NavLink, useLocation } from 'react-router'
+import { useAuth } from '../contexts/AuthContext'
+import Button from '../components/Button'
 
 const navItems = [
   {
@@ -21,10 +23,16 @@ const navItems = [
 
 function Header () {
   const { pathname } = useLocation()
+
+  const { state: { user }, logout } = useAuth()
+
   return (
-    <header className='flex flex-row w-full bg-slate-200 min-h-16 mb-6 shadow-sm'>
-      <nav className='flex w-full'>
-        <ul className='flex flex-row w-full items-center justify-center gap-4'>
+    <header className='flex flex-row w-full bg-slate-200 min-h-16 mb-6 shadow-sm justify-center items-center'>
+      <nav className='flex items-center w-full justify-between px-12'>
+        <span className='flex w-48'>
+          LOGO
+        </span>
+        <ul className='flex flex-row items-center justify-center gap-4'>
           {
             navItems.map((item) => {
               const isCurrent = pathname === item.link
@@ -41,6 +49,19 @@ function Header () {
             })
           }
         </ul>
+        {user &&
+        (
+          <div className='flex flex-row justify-end items-center w-48 gap-4'>
+            <span
+              className='flex flex-col justify-center items-center rounded-full h-10 w-10 bg-amber-500 font-bold'
+            >
+              {user.username[0]}
+            </span>
+            <Button onClick={logout}>
+              Logout
+            </Button>
+          </div>
+        )}
       </nav>
     </header>
   )

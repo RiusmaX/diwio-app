@@ -35,8 +35,26 @@ const register = async (userInfos) => {
   }
 }
 
+const login = async (credentials) => {
+  try {
+    const response = await window.fetch(`${import.meta.env.VITE_STRAPI_API_URL}/auth/local`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify(credentials)
+    })
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error('Erreur d\'inscription', error)
+  }
+}
+
 export {
   getRestaurants,
   getRestaurantById,
-  register
+  register,
+  login
 }

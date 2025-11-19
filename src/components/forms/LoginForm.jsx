@@ -1,27 +1,26 @@
 import { useState } from 'react'
 import Input from './Input'
-import { registerFormSchema } from '../../utils/validation/FormValidation'
+import { loginFormSchema } from '../../utils/validation/FormValidation'
 import { useAuth } from '../../contexts/AuthContext'
 
-function RegisterForm () {
-  const [userInfos, setUserInfos] = useState({
-    username: 'Marius',
-    email: 'marius@sergent.dev',
+function LoginForm () {
+  const [credentials, setCredentials] = useState({
+    identifier: 'marius@sergent.dev',
     password: 'SuperPassword'
   })
 
   const [errors, setErrors] = useState({})
 
-  const { register } = useAuth()
+  const { login } = useAuth()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const parsedUserInfos = await registerFormSchema.validateSync(
-        userInfos,
+      const parsedCredentials = await loginFormSchema.validateSync(
+        credentials,
         { abortEarly: false }
       )
-      await register(parsedUserInfos)
+      await login(parsedCredentials)
     } catch (error) {
       // Erreurs de validation
       let _errors = {}
@@ -37,37 +36,28 @@ function RegisterForm () {
 
   return (
     <>
-      <h1 className='text-4xl my-4'>S'inscrire</h1>
+      <h1 className='text-4xl my-4'>Se connecter</h1>
       <form
         onSubmit={handleSubmit}
         className='flex flex-col w-full justify-center items-center gap-4 max-w-lg self-center'
       >
         <Input
-          label="Nom d'utilisateur"
-          onChangeText={(text) => {
-            setUserInfos({ ...userInfos, username: text })
-            setErrors({ ...errors, username: null })
-          }}
-          value={userInfos.username}
-          error={errors.username}
-        />
-        <Input
           label='Email'
           onChangeText={(text) => {
-            setUserInfos({ ...userInfos, email: text })
-            setErrors({ ...errors, email: null })
+            setCredentials({ ...credentials, identifier: text })
+            setErrors({ ...errors, identifier: null })
           }}
-          value={userInfos.email}
-          error={errors.email}
+          value={credentials.identifier}
+          error={errors.identifier}
         />
         <Input
           type='password'
           label='Mot de passe'
           onChangeText={(text) => {
-            setUserInfos({ ...userInfos, password: text })
+            setCredentials({ ...credentials, password: text })
             setErrors({ ...errors, password: null })
           }}
-          value={userInfos.password}
+          value={credentials.password}
           error={errors.password}
         />
         <Input
@@ -79,4 +69,4 @@ function RegisterForm () {
   )
 }
 
-export default RegisterForm
+export default LoginForm

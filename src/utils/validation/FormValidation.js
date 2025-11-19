@@ -14,7 +14,13 @@ const registerFormSchema = object({
   password: string().min(6).required()
 })
 
+const loginFormSchema = object({
+  identifier: string().email('Le format de l\'email est incorrect').required(),
+  password: string().min(6).required()
+})
+
 export {
   contactFormSchema,
-  registerFormSchema
+  registerFormSchema,
+  loginFormSchema
 }

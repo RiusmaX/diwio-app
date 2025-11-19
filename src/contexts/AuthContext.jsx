@@ -1,5 +1,5 @@
-import { createContext, useContext, useReducer } from 'react'
-import { register as registerApi } from '../services/Strapi'
+import { createContext, useContext, useEffect, useReducer } from 'react'
+import { register as registerApi, login as loginApi } from '../services/Strapi'
 import { toast } from 'react-toastify'
 
 const AuthContext = createContext()
@@ -7,6 +7,9 @@ const AuthContext = createContext()
 const actionTypes = {
   REGISTER_SUCCESS: 'REGISTER_SUCCESS',
   REGISTER_FAILURE: 'REGISTER_FAILURE',
+  LOGIN_SUCCESS: 'LOGIN_SUCCESS',
+  LOGIN_FAILURE: 'LOGIN_FAILURE',
+  LOGOUT: 'LOGOUT',
   LOADING: 'LOADING'
 }
 
@@ -19,6 +22,7 @@ const initialState = {
 
 const AuthReducer = (previousState, action) => {
   switch (action.type) {
+    case actionTypes.LOGIN_SUCCESS:
     case actionTypes.REGISTER_SUCCESS:
       return {
         jwt: action.data.jwt,
@@ -26,6 +30,7 @@ const AuthReducer = (previousState, action) => {
         error: null,
         loading: false
       }
+    case actionTypes.LOGIN_FAILURE:
     case actionTypes.REGISTER_FAILURE:
       return {
         jwt: null,
@@ -38,6 +43,8 @@ const AuthReducer = (previousState, action) => {
         ...previousState,
         loading: true
       }
+    case actionTypes.LOGOUT:
+      return initialState
     default:
       throw new Error(`Unhandled action type : ${action.type}`)
   }
@@ -75,11 +82,56 @@ const authFactory = (state, dispatch) => ({
       })
       toast.error(error.message)
     }
+  },
+  login: async (credentials) => {
+    // On lance un chargement
+    dispatch({ type: actionTypes.LOADING })
+    try {
+      // On appelle l'API
+      const result = await loginApi(credentials)
+      if (result.error) {
+        // On gère les erreurs
+        dispatch({
+          type: actionTypes.LOGIN_FAILURE,
+          data: { error: result.error }
+        })
+        toast.error(result.error.message)
+      } else {
+        // La connexion est réussie
+        dispatch({
+          type: actionTypes.LOGIN_SUCCESS,
+          data: {
+            user: result.user,
+            jwt: result.jwt
+          }
+        })
+        toast.success('Vous êtes connecté avec succès !')
+      }
+    } catch (error) {
+      console.error(error)
+      dispatch({
+        type: actionTypes.LOGIN_FAILURE,
+        data: { error }
+      })
+      toast.error(error.message)
+    }
+  },
+  logout: () => {
+    dispatch({
+      type: actionTypes.LOGOUT
+    })
+    window.localStorage.removeItem('#AUTH')
   }
 })
 
 const AuthProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(AuthReducer, initialState)
+  const savedState = window.localStorage.getItem('#AUTH')
+  const _initialState = savedState ? JSON.parse(savedState) : initialState
+  const [state, dispatch] = useReducer(AuthReducer, _initialState)
+
+  useEffect(() => {
+    window.localStorage.setItem('#AUTH', JSON.stringify(state))
+  }, [state])
 
   return (
     <AuthContext.Provider value={{ state, ...authFactory(state, dispatch) }}>
