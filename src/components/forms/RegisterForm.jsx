@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Input from './Input'
 import { registerFormSchema } from '../../utils/validation/FormValidation'
-import { register } from '../../services/Strapi'
+import { useAuth } from '../../contexts/AuthContext'
 
 function RegisterForm () {
   const [userInfos, setUserInfos] = useState({
@@ -12,6 +12,8 @@ function RegisterForm () {
 
   const [errors, setErrors] = useState({})
 
+  const { register } = useAuth()
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
@@ -19,13 +21,9 @@ function RegisterForm () {
         userInfos,
         { abortEarly: false }
       )
-      try {
-        const registerData = await register(parsedUserInfos)
-        console.log(registerData)
-      } catch (error) {
-        console.log(error)
-      }
+      await register(parsedUserInfos)
     } catch (error) {
+      // Erreurs de validation
       let _errors = {}
       for (const errorItem of error.inner) {
         _errors = {
