@@ -3,7 +3,7 @@ import RestaurantMap from './RestaurantMap'
 
 function RestaurantDetails ({ restaurant }) {
   return (
-    <div className='flex mx-32 h-full max-h-1/2 flex-row items-start justify-center gap-8'>
+    <div className='flex mx-4 lg:mx-32 h-full max-h-1/2 flex-col lg:flex-row items-center lg:items-start justify-center gap-8'>
       <div
         className='flex flex-1 w-full h-full flex-col bg-cover bg-center bg-no-repeat rounded-2xl '
         style={{

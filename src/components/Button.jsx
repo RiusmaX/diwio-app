@@ -1,12 +1,13 @@
-function Button ({ children, onClick }) {
+function Button ({ children, onClick, className, disabled }) {
   const handleClick = () => {
     onClick && onClick()
   }
 
   return (
     <button
-      className='bg-cyan-200 px-8 py-4 rounded-lg font-semibold shadow-lg hover:shadow-xs hover:bg-cyan-300 cursor-pointer transition-all duration-200 active:scale-90'
+      className={`${disabled ? 'opacity-50 cursor-not-allowed bg-amber-500' : 'bg-amber-500 hover:bg-amber-600 cursor-pointer active:scale-95'}  text-white font-semibold py-2 px-4 rounded transition duration-300 ${className || ''} `}
       onClick={handleClick}
+      disabled={disabled}
     >
       {children}
     </button>

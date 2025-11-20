@@ -15,7 +15,7 @@ function RestaurantsPage () {
   }
 
   return data && (
-    <div>
+    <div className='flex flex-col justify-center items-center'>
       <h2 className='text-4xl font-semibold text-center'>Nos restaurants</h2>
       <RestaurantsList restaurants={data.data} />
     </div>

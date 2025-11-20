@@ -1,6 +1,7 @@
 import { useParams } from 'react-router'
 import RestaurantDetails from '../components/restaurants/RestaurantDetails'
 import { useFetch } from '../hooks/useFetch'
+import DishesList from '../components/dishes/DishesList'
 
 function RestaurantDetailsPage () {
   const { id } = useParams()
@@ -8,10 +9,8 @@ function RestaurantDetailsPage () {
   // const id = params.id
 
   const { loading, data, error } = useFetch({
-    url: `${import.meta.env.VITE_STRAPI_API_URL}/restaurants/${id}?populate=*`
+    url: `${import.meta.env.VITE_STRAPI_API_URL}/restaurants/${id}?populate[dishes][populate]=image&populate[address]=*&populate=logo`
   })
-
-  console.log(data)
 
   if (loading) {
     return <h2 className='text-center'>Chargement...</h2>
@@ -26,8 +25,9 @@ function RestaurantDetailsPage () {
   }
   // TODO : implement loading
   return data && data.data && (
-    <div className='flex flex-col w-full h-full'>
+    <div className='flex flex-col w-full h-full gap-8'>
       <RestaurantDetails restaurant={data.data} />
+      <DishesList dishes={data.data.dishes} />
     </div>
   )
 }
